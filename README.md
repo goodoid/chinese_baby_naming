@@ -1,4 +1,4 @@
-# chinese_baby_naming
+# 根据康熙字典 起名
 
 using step
 ===========
