@@ -1,6 +1,7 @@
 import sys
 from itertools import product
 from kx_word_extract import load_checkpoint
+from wuge import ge
 
 def load_word(word_file):
     word_records = {}
@@ -10,7 +11,7 @@ def load_word(word_file):
                 w, v = line.strip().split(',')
                 word_records[w] = v
     except:
-        print('file not found:{}'.format(output_file))
+        print('file not found:{}'.format(word_file))
     return word_records
 
 def combine(words, combine_method='cross'):
@@ -54,6 +55,13 @@ def wuxing_not_in(w1, w2):
         return False
     return True
 
+def wuxing_sequence_equal(w1, w2):
+    global word_info
+    global wuxing_sequence
+    wx1 = word_info[w1]
+    wx2 = word_info[w2]
+    return [wx1, wx2] == wuxing_sequence
+
 def w1_in(w1):
     global word_info
     global w1_range
@@ -76,11 +84,17 @@ if __name__ == '__main__':
     #print(w1)
     names = combine([w1.keys(), w2.keys()])
     print('combined:',len(names))
-    wuxing_range = ['(土)']
+    wuxing_range = ['(木)', '(土)']
     wuxing_not_in_range = []
     names = filter_name(names, wuxing_in)
     print('wuxing_in:',len(names))
     names = filter_name(names, wuxing_not_in)
+    print('wuxing_not_in:',len(names))
+    #wuxing_sequence = ['(土)', '(土)']
+    #wuxing_sequence = ['(木)', '(土)']
+    #wuxing_sequence = ['(土)', '(木)']
+    wuxing_sequence = ['(火)', '(土)']
+    names = filter_name(names, wuxing_sequence_equal)
     print('wuxing_not_in:',len(names))
     for n in names:
         w1, w2 = n

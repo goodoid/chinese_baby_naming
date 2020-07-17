@@ -47,7 +47,7 @@ def parse(file_name, append_file_name):
     return word_map
 
 
-def load_checkpoint(output_file, download_path):
+def load_checkpoint(output_file, download_path, tid, word_count):
     word_records = {}
     try:
         with open(output_file) as f:
@@ -58,6 +58,9 @@ def load_checkpoint(output_file, download_path):
         print('file not found:{}'.format(output_file))
     page_index = 0
     for f in [f for f in os.listdir(download_path) if os.path.isfile(os.path.join(download_path, f))]:
+       want_prefix = 'tid{}_wd{}_'.format(tid, word_count)
+       if want_prefix not in f:
+           continue
        page_str = (f.split('.')[0]).split('_')[2]
        cur_page_index = int(page_str.replace('page',''))
        if cur_page_index > page_index:
@@ -73,7 +76,7 @@ if __name__ == '__main__':
     last_wd_size = -1
     word_output_file = 'tid{}_wd{}.agg'.format(tid, word_count)
     outpath = './tmp'
-    word_record, page_index = load_checkpoint(word_output_file, outpath)
+    word_record, page_index = load_checkpoint(word_output_file, outpath, tid, word_count)
     print('load info word:{} page index:{}'.format(len(word_record), page_index))
     while last_wd_size != len(word_record):
         last_wd_size = len(word_record)
